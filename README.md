@@ -27,7 +27,7 @@ You need to require the specific backports yourself, see below.
 You can also require all included backports using
 
 ```
-require 'ruby3-backward-compatibility/all'
+require 'ruby3-backward-compatibility/compatibility/all'
 ```
 
 
