@@ -18,6 +18,8 @@ module Ruby3BackwardCompatibility
       [regular_arg, keyword_arg]
     end
 
+    protected
+
     def protected_method(regular_arg, keyword_arg:)
       [regular_arg, keyword_arg]
     end
@@ -54,7 +56,7 @@ module Ruby3BackwardCompatibility
 
         it 'does not make the method public' do
           expect(Ruby3Class.new.respond_to?(:private_method)).to eq(false)
-          expect(Ruby3Class.new.respond_to?(:private_method, true)).to eq(true)
+          expect(Ruby3Class.private_instance_methods).to include(:private_method)
         end
       end
 
@@ -65,7 +67,7 @@ module Ruby3BackwardCompatibility
 
         it 'does not make the method public' do
           expect(Ruby3Class.new.respond_to?(:protected_method)).to eq(false)
-          expect(Ruby3Class.new.respond_to?(:protected_method, true)).to eq(true)
+          expect(Ruby3Class.protected_instance_methods).to include(:protected_method)
         end
       end
     end
