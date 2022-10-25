@@ -1,4 +1,10 @@
 module Ruby3BackwardCompatibility
+  module WrapWithPositionalHash
+    def prepended_method(regular_arg, options = nil)
+      super
+    end
+  end
+
   class Ruby3Class
     def keyword_method(regular_arg, keyword_arg:)
       [regular_arg, keyword_arg]
@@ -9,6 +15,10 @@ module Ruby3BackwardCompatibility
     end
 
     def keyword_method_3(regular_arg, keyword_arg:)
+      [regular_arg, keyword_arg]
+    end
+
+    def prepended_method(regular_arg, keyword_arg:)
       [regular_arg, keyword_arg]
     end
 
@@ -27,11 +37,14 @@ module Ruby3BackwardCompatibility
 
   class Ruby3Class
     extend Ruby3Keywords
+    prepend WrapWithPositionalHash
 
     ruby3_keywords :keyword_method
     ruby3_keywords :keyword_method_2, :keyword_method_3
 
     ruby3_keywords :private_method
+
+    ruby3_keywords :prepended_method
   end
 
   describe Ruby3Keywords do
@@ -68,6 +81,12 @@ module Ruby3BackwardCompatibility
         it 'does not make the method public' do
           expect(Ruby3Class.new.respond_to?(:protected_method)).to eq(false)
           expect(Ruby3Class.protected_instance_methods).to include(:protected_method)
+        end
+      end
+
+      context 'methods that are already prepended' do
+        it 'works' do
+          expect(Ruby3Class.new.prepended_method('foo', keyword_arg: 'bar')).to eq(['foo', 'bar'])
         end
       end
     end

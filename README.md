@@ -67,6 +67,8 @@ Ruby3Class.new.some_method({ foo: 'bar' }) # now works as well
 
 This will wrap the given method and convert a hash given as the last argument into keywords, similar to how it worked in Ruby 2.
 
+*Note:* In case the method is also defined in a prepended module, you need to put the `extend Ruby3BackwardCompatibility::Ruby3Keywords` above the `prepend`.
+
 ### ERB
 
 `ERB.new` used to have the signature

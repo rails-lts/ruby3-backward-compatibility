@@ -1,5 +1,11 @@
 module Ruby3BackwardCompatibility
   module Ruby3Keywords
+    def self.extended(by)
+      # prepend the anonymous module now, so the user has a chance to control where exactly we will end 
+      # up in the prepend chain...
+      by.send(:_ruby3_keywords_module)
+    end
+
     def ruby3_keywords(*methods)
       methods.each do |method|
         method_is_private = private_instance_methods.include?(method)
