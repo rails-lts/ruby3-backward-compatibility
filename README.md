@@ -30,6 +30,8 @@ You can also require all included backports using
 require 'ruby3-backward-compatibility/compatibility/all'
 ```
 
+Note however that this will not patch anything that has not been required yet. You can always require single patches as shown below.
+
 
 ## List of backports
 
