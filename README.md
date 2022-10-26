@@ -90,6 +90,17 @@ require 'ruby3_backward_compatibility/compatibility/erb'
 ```
 
 
+### I18n
+
+`I18n` has a few methods (`translate`, `localize`, etc.) that requires to be called with keywords.
+
+To allow calling it with option hashes, too, use
+
+```
+require 'ruby3_backward_compatibility/compatibility/i18n'
+```
+
+
 ### Object
 
 The methods `Object#taint` and `Object#untaint` were no-ops for a while but started to raise deprecation warnings.
