@@ -13,7 +13,7 @@ module Ruby3BackwardCompatibility
 
         arity_before_prepend = self.instance_method(method).arity
         _ruby3_keywords_module.define_method(method) do |*args, **keyword_args|
-          if args.last.respond_to?(:to_hash) && args.size >= arity_before_prepend.abs
+          if args.last.respond_to?(:to_hash) && args.size > (arity_before_prepend.abs-1)
             keyword_args.merge!(args.pop)
           end
           super(*args, **keyword_args)
