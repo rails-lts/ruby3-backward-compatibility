@@ -57,6 +57,15 @@ module Ruby3BackwardCompatibility
         expect(Ruby3Class.new.keyword_method('foo', { keyword_arg: 'bar' })).to eq(['foo', 'bar'])
       end
 
+      it 'allows to call the method with a to_hash duck type' do
+        duck = Object.new
+        def duck.to_hash
+          { keyword_arg: 'bar' }
+        end
+
+        expect(Ruby3Class.new.keyword_method('foo', duck)).to eq(['foo', 'bar'])
+      end
+
       it 'can loop' do
         expect(Ruby3Class.new.keyword_method_2('foo', { keyword_arg: 'bar' })).to eq(['foo', 'bar'])
         expect(Ruby3Class.new.keyword_method_3('foo', { keyword_arg: 'bar' })).to eq(['foo', 'bar'])

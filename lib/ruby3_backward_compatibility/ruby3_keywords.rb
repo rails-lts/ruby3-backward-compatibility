@@ -12,7 +12,7 @@ module Ruby3BackwardCompatibility
         method_is_protected = protected_instance_methods.include?(method)
 
         _ruby3_keywords_module.define_method(method) do |*args, **keyword_args|
-          if args.last.is_a?(Hash)
+          if args.last.respond_to?(:to_hash)
             keyword_args.merge!(args.pop)
           end
           super(*args, **keyword_args)
