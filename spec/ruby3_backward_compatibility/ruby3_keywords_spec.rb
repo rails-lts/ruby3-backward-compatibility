@@ -47,15 +47,15 @@ module Ruby3BackwardCompatibility
     extend Ruby3Keywords
     prepend WrapWithPositionalHash
 
-    # ruby3_keywords :keyword_method
-    # ruby3_keywords :keyword_method_2, :keyword_method_3
+    ruby3_keywords :keyword_method
+    ruby3_keywords :keyword_method_2, :keyword_method_3
 
-    # ruby3_keywords :method_4
+    ruby3_keywords :method_4
     ruby3_keywords :method_5
 
-    # ruby3_keywords :private_method
+    ruby3_keywords :private_method
 
-    # ruby3_keywords :prepended_method
+    ruby3_keywords :prepended_method
   end
 
   describe Ruby3Keywords do
@@ -87,6 +87,8 @@ module Ruby3BackwardCompatibility
       it 'method5 works the way it is used in activesupport' do
         array = [1, { keyword_arg: 'changed' }]
         expect(Ruby3Class.new.method_5(*array, {})).to eq([1, 'changed'])
+        expect(Ruby3Class.new.method_5(*array)).to eq([1, 'changed'])
+        expect(Ruby3Class.new.method_5(1, keyword_arg: 'changed')).to eq([1, 'changed'])
       end
 
       it 'can loop' do
