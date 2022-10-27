@@ -22,6 +22,10 @@ module Ruby3BackwardCompatibility
       [regular_arg, keyword_arg]
     end
 
+    def method_4(regular_arg, keyword_arg: 'default-kw-arg')
+      [regular_arg, keyword_arg]
+    end
+
     private
 
     def private_method(regular_arg, keyword_arg:)
@@ -41,6 +45,8 @@ module Ruby3BackwardCompatibility
 
     ruby3_keywords :keyword_method
     ruby3_keywords :keyword_method_2, :keyword_method_3
+
+    ruby3_keywords :method_4
 
     ruby3_keywords :private_method
 
@@ -64,6 +70,12 @@ module Ruby3BackwardCompatibility
         end
 
         expect(Ruby3Class.new.keyword_method('foo', duck)).to eq(['foo', 'bar'])
+      end
+
+      it 'works for methods that could expect a hash as first argument' do
+        expect(Ruby3Class.new.method_4({ hash: 'data' })).to eq([{ hash: 'data' }, 'default-kw-arg'])
+        expect(Ruby3Class.new.method_4({ hash: 'data', keyword_arg: 'changed' })).to eq([{ hash: 'data', keyword_arg: 'changed' }, 'default-kw-arg'])
+        expect(Ruby3Class.new.method_4({ hash: 'data', keyword_arg: 'foo' }, keyword_arg: 'changed')).to eq([{ hash: 'data', keyword_arg: 'foo' }, 'changed'])
       end
 
       it 'can loop' do

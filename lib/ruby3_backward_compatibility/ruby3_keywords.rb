@@ -11,8 +11,9 @@ module Ruby3BackwardCompatibility
         method_is_private = private_instance_methods.include?(method)
         method_is_protected = protected_instance_methods.include?(method)
 
+        arity_before_prepend = self.instance_method(method).arity
         _ruby3_keywords_module.define_method(method) do |*args, **keyword_args|
-          if args.last.respond_to?(:to_hash)
+          if args.last.respond_to?(:to_hash) && args.size >= arity_before_prepend.abs
             keyword_args.merge!(args.pop)
           end
           super(*args, **keyword_args)

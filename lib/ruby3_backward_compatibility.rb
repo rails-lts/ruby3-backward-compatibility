@@ -6,5 +6,6 @@ module Ruby3BackwardCompatibility
   # TODO private?
 end
 
+require 'byebug'
 require 'ruby3_backward_compatibility/ruby3_keywords'
 require 'ruby3_backward_compatibility/version'
