@@ -26,6 +26,10 @@ module Ruby3BackwardCompatibility
       [regular_arg, keyword_arg]
     end
 
+    def method_5(regular_arg, keyword_arg: 'default-kw-arg', **)
+      [regular_arg, keyword_arg]
+    end
+
     private
 
     def private_method(regular_arg, keyword_arg:)
@@ -43,14 +47,15 @@ module Ruby3BackwardCompatibility
     extend Ruby3Keywords
     prepend WrapWithPositionalHash
 
-    ruby3_keywords :keyword_method
-    ruby3_keywords :keyword_method_2, :keyword_method_3
+    # ruby3_keywords :keyword_method
+    # ruby3_keywords :keyword_method_2, :keyword_method_3
 
-    ruby3_keywords :method_4
+    # ruby3_keywords :method_4
+    ruby3_keywords :method_5
 
-    ruby3_keywords :private_method
+    # ruby3_keywords :private_method
 
-    ruby3_keywords :prepended_method
+    # ruby3_keywords :prepended_method
   end
 
   describe Ruby3Keywords do
@@ -77,6 +82,11 @@ module Ruby3BackwardCompatibility
         expect(Ruby3Class.new.method_4({ hash: 'data', keyword_arg: 'changed' })).to eq([{ hash: 'data', keyword_arg: 'changed' }, 'default-kw-arg'])
         expect(Ruby3Class.new.method_4({ hash: 'data', keyword_arg: 'foo' }, keyword_arg: 'changed')).to eq([{ hash: 'data', keyword_arg: 'foo' }, 'changed'])
         expect(Ruby3Class.new.method_4('foo' => 'bar')).to eq([{ 'foo' => 'bar' }, 'default-kw-arg'])
+      end
+
+      it 'method5 works the way it is used in activesupport' do
+        array = [1, { keyword_arg: 'changed' }]
+        expect(Ruby3Class.new.method_5(*array, {})).to eq([1, 'changed'])
       end
 
       it 'can loop' do
