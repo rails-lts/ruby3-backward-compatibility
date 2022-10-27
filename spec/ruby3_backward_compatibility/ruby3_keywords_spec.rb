@@ -76,6 +76,7 @@ module Ruby3BackwardCompatibility
         expect(Ruby3Class.new.method_4({ hash: 'data' })).to eq([{ hash: 'data' }, 'default-kw-arg'])
         expect(Ruby3Class.new.method_4({ hash: 'data', keyword_arg: 'changed' })).to eq([{ hash: 'data', keyword_arg: 'changed' }, 'default-kw-arg'])
         expect(Ruby3Class.new.method_4({ hash: 'data', keyword_arg: 'foo' }, keyword_arg: 'changed')).to eq([{ hash: 'data', keyword_arg: 'foo' }, 'changed'])
+        expect(Ruby3Class.new.method_4('foo' => 'bar')).to eq([{ 'foo' => 'bar' }, 'default-kw-arg'])
       end
 
       it 'can loop' do
