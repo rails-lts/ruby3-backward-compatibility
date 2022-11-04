@@ -4,7 +4,12 @@ module Ruby3BackwardCompatibility
       method = mod.send(:instance_method, method_name)
       while method.owner > mod
         # we found the method in a prepended module
-        method = method.super_method
+        super_method = method.super_method
+        if super_method.nil?
+          return method
+        else
+          method = super_method
+        end
       end
       method
     end
