@@ -60,12 +60,42 @@ module Ruby3BackwardCompatibility
 
   describe Ruby3Keywords do
     describe '.ruby3_keywords' do
+      let(:class_with_basic_keyword_methods) do
+        Class.new do
+          extend Ruby3Keywords
+
+          ruby3_keywords def keyword_method(regular_arg, keyword_arg:)
+            [regular_arg, keyword_arg]
+          end
+
+          ruby3_keywords def optional_keyword_method(regular_arg, keyword_arg: 'default-keyword-arg')
+            [regular_arg, keyword_arg]
+          end
+
+          ruby3_keywords def optional_keyword_method_with_rest_args(regular_arg, keyword_arg: 'default-keyword-arg', **rest_keyword_args)
+            [regular_arg, keyword_arg, rest_keyword_args]
+          end
+        end
+      end
+
       it 'allows to call the method with keyword args' do
-        expect(Ruby3Class.new.keyword_method('foo', keyword_arg: 'bar')).to eq(['foo', 'bar'])
+        subject = class_with_basic_keyword_methods.new
+        expect(subject.keyword_method('foo', keyword_arg: 'bar')).to eq(['foo', 'bar'])
       end
 
       it 'allows to call the method with an options hash' do
-        expect(Ruby3Class.new.keyword_method('foo', { keyword_arg: 'bar' })).to eq(['foo', 'bar'])
+        subject = class_with_basic_keyword_methods.new
+        expect(subject.keyword_method('foo', { keyword_arg: 'bar' })).to eq(['foo', 'bar'])
+      end
+
+      it 'allows to call the method with an options hash for optional keyword args' do
+        subject = class_with_basic_keyword_methods.new
+        expect(subject.optional_keyword_method('foo', { keyword_arg: 'bar' })).to eq(['foo', 'bar'])
+      end
+
+      it 'allows to call the method with an options hash for optional keyword args and rest keyword args' do
+        subject = class_with_basic_keyword_methods.new
+        expect(subject.optional_keyword_method_with_rest_args('foo', { keyword_arg: 'bar', other_arg: 'baz' })).to eq(['foo', 'bar', { other_arg: 'baz' }])
       end
 
       it 'allows to call the method with a to_hash duck type' do
@@ -73,54 +103,131 @@ module Ruby3BackwardCompatibility
         def duck.to_hash
           { keyword_arg: 'bar' }
         end
+        subject = class_with_basic_keyword_methods.new
 
-        expect(Ruby3Class.new.keyword_method('foo', duck)).to eq(['foo', 'bar'])
+        expect(subject.keyword_method('foo', duck)).to eq(['foo', 'bar'])
       end
 
-      it 'works for methods that could expect a hash as first argument' do
-        expect(Ruby3Class.new.method_4({ hash: 'data' })).to eq([{ hash: 'data' }, 'default-kw-arg'])
-        expect(Ruby3Class.new.method_4({ hash: 'data', keyword_arg: 'changed' })).to eq([{ hash: 'data', keyword_arg: 'changed' }, 'default-kw-arg'])
-        expect(Ruby3Class.new.method_4({ hash: 'data', keyword_arg: 'foo' }, keyword_arg: 'changed')).to eq([{ hash: 'data', keyword_arg: 'foo' }, 'changed'])
-        expect(Ruby3Class.new.method_4('foo' => 'bar')).to eq([{ 'foo' => 'bar' }, 'default-kw-arg'])
+      it 'can enhance previously defined methods' do
+        pristine_class = Class.new do
+          def keyword_method(regular_arg, keyword_arg:)
+            [regular_arg, keyword_arg]
+          end
+        end
+        pristine_class.class_eval do
+          extend Ruby3Keywords
+          ruby3_keywords :keyword_method
+        end
+        subject = pristine_class.new
+
+        expect(subject.keyword_method('foo', { keyword_arg: 'bar' })).to eq(['foo', 'bar'])
       end
 
-      it 'method5 works the way it is used in activesupport' do
-        array = [1, { keyword_arg: 'changed' }]
-        expect(Ruby3Class.new.method_5(*array, {})).to eq([1, 'changed'])
-        expect(Ruby3Class.new.method_5(*array)).to eq([1, 'changed'])
-        expect(Ruby3Class.new.method_5(1, keyword_arg: 'changed')).to eq([1, 'changed'])
+      it 'can enhance multiple methods at once' do
+        pristine_class = Class.new do
+          def keyword_method_1(regular_arg, keyword_arg:)
+            [regular_arg, keyword_arg]
+          end
+
+          def keyword_method_2(regular_arg, keyword_arg:)
+            [regular_arg, keyword_arg]
+          end
+        end
+        pristine_class.class_eval do
+          extend Ruby3Keywords
+          ruby3_keywords :keyword_method_1, :keyword_method_2
+        end
+        subject = pristine_class.new
+
+        expect(subject.keyword_method_1('foo', { keyword_arg: 'bar' })).to eq(['foo', 'bar'])
+        expect(subject.keyword_method_2('foo', { keyword_arg: 'bar' })).to eq(['foo', 'bar'])
       end
 
-      it 'can loop' do
-        expect(Ruby3Class.new.keyword_method_2('foo', { keyword_arg: 'bar' })).to eq(['foo', 'bar'])
-        expect(Ruby3Class.new.keyword_method_3('foo', { keyword_arg: 'bar' })).to eq(['foo', 'bar'])
+      it 'does not turn a hash into keywords if it is a required argument' do
+        subject = class_with_basic_keyword_methods.new
+
+        expect(subject.optional_keyword_method({ hash: 'data' })).to eq([{ hash: 'data' }, 'default-keyword-arg'])
+        expect(subject.optional_keyword_method({ hash: 'data', keyword_arg: 'changed' })).to eq([{ hash: 'data', keyword_arg: 'changed' }, 'default-keyword-arg'])
+        expect(subject.optional_keyword_method({ hash: 'data', keyword_arg: 'foo' }, keyword_arg: 'given-keyword-arg')).to eq([{ hash: 'data', keyword_arg: 'foo' }, 'given-keyword-arg'])
+        expect(subject.optional_keyword_method('foo' => 'bar')).to eq([{ 'foo' => 'bar' }, 'default-keyword-arg'])
       end
 
       context 'on private methods' do
+        let(:class_with_private_keyword_method) do
+          Class.new do
+            extend Ruby3Keywords
+
+            private
+
+            ruby3_keywords def private_keyword_method(regular_arg, keyword_arg:)
+              [regular_arg, keyword_arg]
+            end
+          end
+        end
+
         it 'works' do
-          expect(Ruby3Class.new.send(:private_method, 'foo', keyword_arg: 'bar')).to eq(['foo', 'bar'])
+          subject = class_with_private_keyword_method.new
+          expect(subject.send(:private_keyword_method, 'foo', keyword_arg: 'bar')).to eq(['foo', 'bar'])
+          expect(subject.send(:private_keyword_method, 'foo', { keyword_arg: 'bar' })).to eq(['foo', 'bar'])
         end
 
         it 'does not make the method public' do
-          expect(Ruby3Class.new.respond_to?(:private_method)).to eq(false)
-          expect(Ruby3Class.private_instance_methods).to include(:private_method)
+          subject = class_with_private_keyword_method.new
+          expect(subject.respond_to?(:private_method)).to eq(false)
+          expect(class_with_private_keyword_method.private_instance_methods).to include(:private_keyword_method)
         end
       end
 
       context 'on protected methods' do
+        let(:class_with_protected_keyword_method) do
+          Class.new do
+            extend Ruby3Keywords
+
+            protected
+
+            ruby3_keywords def protected_keyword_method(regular_arg, keyword_arg:)
+              [regular_arg, keyword_arg]
+            end
+          end
+        end
+
         it 'works' do
-          expect(Ruby3Class.new.send(:protected_method, 'foo', keyword_arg: 'bar')).to eq(['foo', 'bar'])
+          subject = class_with_protected_keyword_method.new
+          expect(subject.send(:protected_keyword_method, 'foo', keyword_arg: 'bar')).to eq(['foo', 'bar'])
+          expect(subject.send(:protected_keyword_method, 'foo', { keyword_arg: 'bar' })).to eq(['foo', 'bar'])
         end
 
         it 'does not make the method public' do
-          expect(Ruby3Class.new.respond_to?(:protected_method)).to eq(false)
-          expect(Ruby3Class.protected_instance_methods).to include(:protected_method)
+          subject = class_with_protected_keyword_method.new
+          expect(subject.respond_to?(:protected_method)).to eq(false)
+          expect(class_with_protected_keyword_method.protected_instance_methods).to include(:protected_keyword_method)
         end
       end
 
-      context 'methods that are already prepended' do
+      context 'prepended methods' do
+        let(:wrap_with_positional_hash) do
+          Module.new do
+            def prepended_keyword_method(regular_arg, options)
+              super
+            end
+          end
+        end
+        let(:class_with_prepended_keyword_method) do
+          prepend_module = wrap_with_positional_hash
+          Class.new do
+            extend Ruby3Keywords
+            prepend prepend_module
+
+            ruby3_keywords def prepended_keyword_method(regular_arg, keyword_arg: 'default-keyword-arg')
+              [regular_arg, keyword_arg]
+            end
+          end
+        end
+
         it 'works' do
-          expect(Ruby3Class.new.prepended_method('foo', keyword_arg: 'bar')).to eq(['foo', 'bar'])
+          subject = class_with_prepended_keyword_method.new
+          expect(subject.prepended_keyword_method('foo', keyword_arg: 'bar')).to eq(['foo', 'bar'])
+          expect(subject.prepended_keyword_method('foo', { keyword_arg: 'bar' })).to eq(['foo', 'bar'])
         end
       end
     end
