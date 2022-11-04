@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [0.2.1] - 2022-11-04
+
+- Fix `ruby3_keywords` for prepended methods.
+
 ## [0.2.0] - 2022-10-26
 
 - Add `ruby3_backward_compatibility/compatibility/i18n`.
