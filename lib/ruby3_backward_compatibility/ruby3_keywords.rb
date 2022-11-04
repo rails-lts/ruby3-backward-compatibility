@@ -1,5 +1,14 @@
 module Ruby3BackwardCompatibility
   module Ruby3Keywords
+    def self.find_own_instance_method(mod, method_name)
+      method = mod.send(:instance_method, method_name)
+      while method.owner > mod
+        # we found the method in a prepended module
+        method = method.super_method
+      end
+      method
+    end
+
     def self.extended(by)
       # prepend the anonymous module now, so the user has a chance to control where exactly we will end 
       # up in the prepend chain...
@@ -11,7 +20,7 @@ module Ruby3BackwardCompatibility
         method_is_private = private_instance_methods.include?(method_name)
         method_is_protected = protected_instance_methods.include?(method_name)
 
-        required_param_count = instance_method(method_name).parameters.sum { |(kind, _name)| kind == :req ? 1 : 0 }
+        required_param_count = Ruby3Keywords.find_own_instance_method(self, method_name).parameters.sum { |(kind, _name)| kind == :req ? 1 : 0 }
         _ruby3_keywords_module.define_method(method_name) do |*args|
           if args.last.respond_to?(:to_hash) && args.size > required_param_count
             keyword_args = args.pop
