@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## [0.2.2] - 2022-11-10
+
 - Fix `ruby3_keywords` to pass blocks.
 
 ## [0.2.1] - 2022-11-04
