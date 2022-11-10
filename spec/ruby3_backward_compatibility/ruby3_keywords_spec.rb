@@ -93,6 +93,20 @@ module Ruby3BackwardCompatibility
         expect(subject.optional_keyword_method('foo' => 'bar')).to eq([{ 'foo' => 'bar' }, 'default-keyword-arg'])
       end
 
+      it 'passes through blocks' do
+        subject = Class.new do
+          extend Ruby3Keywords
+
+          ruby3_keywords def method_with_block(&block)
+            block.call
+          end
+        end.new
+
+        called = false
+        subject.method_with_block { called = true }
+        expect(called).to eq(true)
+      end
+
       context 'on private methods' do
         let(:class_with_private_keyword_method) do
           Class.new do

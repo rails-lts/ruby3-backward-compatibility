@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+- Fix `ruby3_keywords` to pass blocks.
+
 ## [0.2.1] - 2022-11-04
 
 - Fix `ruby3_keywords` for prepended methods.

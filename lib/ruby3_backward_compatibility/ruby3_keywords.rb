@@ -27,12 +27,12 @@ module Ruby3BackwardCompatibility
         method_is_protected = protected_instance_methods.include?(method_name)
 
         required_param_count = Ruby3Keywords.find_owned_instance_method(self, method_name).parameters.sum { |(kind, _name)| kind == :req ? 1 : 0 }
-        _ruby3_keywords_module.define_method(method_name) do |*args|
+        _ruby3_keywords_module.define_method(method_name) do |*args, &block|
           if args.last.respond_to?(:to_hash) && args.size > required_param_count
             keyword_args = args.pop
-            super(*args, **keyword_args)
+            super(*args, **keyword_args, &block)
           else
-            super(*args)
+            super(*args, &block)
           end
         end
 
