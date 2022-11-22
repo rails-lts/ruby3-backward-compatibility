@@ -8,12 +8,6 @@ module Ruby3BackwardCompatibility
     end
 
     module ClassMethods
-      if Psych::VERSION >= '4'
-        def load(...)
-          unsafe_load(...)
-        end
-      end
-
       def safe_load(yaml, legacy_permitted_classes = NOT_GIVEN, legacy_permitted_symbols = NOT_GIVEN, legacy_aliases = NOT_GIVEN, legacy_filename = NOT_GIVEN, permitted_classes: [], permitted_symbols: [], aliases: false, filename: nil, **args)
         if legacy_permitted_classes != NOT_GIVEN
           permitted_classes = legacy_permitted_classes
