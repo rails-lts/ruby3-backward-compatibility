@@ -1,7 +1,12 @@
 module Ruby3BackwardCompatibility
   module Ruby3Keywords
-    def self.find_owned_instance_method(mod, method_name)
-      method = mod.send(:instance_method, method_name)
+    def self.find_owned_instance_method(mod, method_name, ignore_missing: false)
+      method = begin
+        mod.send(:instance_method, method_name)
+      rescue NameError
+        return if ignore_missing
+        raise NameError, "method '#{method_name}' is not defined"
+      end
       while method.owner > mod
         # we found the method in a prepended module
         super_method = method.super_method
@@ -21,12 +26,15 @@ module Ruby3BackwardCompatibility
       by.send(:_ruby3_keywords_module)
     end
 
-    def ruby3_keywords(*method_names)
+    def ruby3_keywords(*method_names, ignore_missing: false)
       method_names.each do |method_name|
         method_is_private = private_instance_methods.include?(method_name)
         method_is_protected = protected_instance_methods.include?(method_name)
 
-        required_param_count = Ruby3Keywords.find_owned_instance_method(self, method_name).parameters.sum { |(kind, _name)| kind == :req ? 1 : 0 }
+        method = Ruby3Keywords.find_owned_instance_method(self, method_name, ignore_missing: ignore_missing)
+        next unless method
+
+        required_param_count = method.parameters.sum { |(kind, _name)| kind == :req ? 1 : 0 }
         _ruby3_keywords_module.define_method(method_name) do |*args, &block|
           if args.last.respond_to?(:to_hash) && args.size > required_param_count
             keyword_args = args.pop
