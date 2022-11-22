@@ -1,6 +1,10 @@
 ## [Unreleased]
 
-## [0.2.3] - 2022-11-10
+## [0.3.0] - 2022-11-22
+
+- Security fix: `ruby3_backward_compatibility/compatibility/psych` no longer aliases YAML.load to YAML.safe_load.
+
+## [0.2.3] - 2022-11-22
 
 - Add `ignore_missing: true` option for `ruby3_keywords` to not crash on missing methods.
 - Fix `ruby3_backward_compatibility/compatibility/i18n` to not crash when used with older I18n versions.
