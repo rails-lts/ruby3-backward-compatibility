@@ -1,5 +1,10 @@
 ## [Unreleased]
 
+## [0.2.3] - 2022-11-10
+
+- Add `ignore_missing: true` option for `ruby3_keywords` to not crash on missing methods.
+- Fix `ruby3_backward_compatibility/compatibility/i18n` to not crash when used with older I18n versions.
+
 ## [0.2.2] - 2022-11-10
 
 - Fix `ruby3_keywords` to pass blocks.
