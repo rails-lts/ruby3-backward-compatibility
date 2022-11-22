@@ -107,6 +107,26 @@ module Ruby3BackwardCompatibility
         expect(called).to eq(true)
       end
 
+      it 'crashes if the method does not exist' do
+        expect do
+          Class.new do
+            extend Ruby3Keywords
+
+            ruby3_keywords :undefined_method
+          end
+        end.to raise_error(NameError, /'undefined_method' is not defined/)
+      end
+
+      it 'can be configured to ignore unknown methods' do
+        expect do
+          Class.new do
+            extend Ruby3Keywords
+
+            ruby3_keywords :undefined_method, ignore_missing: true
+          end
+        end.not_to raise_error
+      end
+
       context 'on private methods' do
         let(:class_with_private_keyword_method) do
           Class.new do
