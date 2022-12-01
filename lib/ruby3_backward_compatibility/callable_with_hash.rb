@@ -50,6 +50,12 @@ module Ruby3BackwardCompatibility
           _ruby3_callable_with_hash_module.send(:protected, method_name)
         end
       end
+
+      if method_names.size > 1
+        method_names
+      else
+        method_names.first
+      end
     end
 
     private

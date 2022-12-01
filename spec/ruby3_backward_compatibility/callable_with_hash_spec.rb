@@ -127,6 +127,35 @@ module Ruby3BackwardCompatibility
         end.not_to raise_error
       end
 
+      it 'returns a single arguments verbatim' do
+        result = nil
+        Class.new do
+          extend CallableWithHash
+
+          def foo
+          end
+
+          result = callable_with_hash :foo
+        end
+        expect(result).to eq(:foo)
+      end
+
+      it 'returns multiple arguments as arrays' do
+        result = nil
+        Class.new do
+          extend CallableWithHash
+
+          def foo
+          end
+
+          def bar
+          end
+
+          result = callable_with_hash :foo, :bar
+        end
+        expect(result).to eq([:foo, :bar])
+      end
+
       context 'on private methods' do
         let(:class_with_private_keyword_method) do
           Class.new do
