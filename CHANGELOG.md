@@ -1,5 +1,8 @@
 ## [Unreleased]
 
+## [1.0.0] - 2022-12-01
+
+- Now 1.0, adhering to semantic versioning.
 - Breaking: Rename `ruby3_keywords` to `callable_with_hash`.
 
 ## [0.3.0] - 2022-11-22
