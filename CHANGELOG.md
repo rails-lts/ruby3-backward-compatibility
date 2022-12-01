@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## [1.1.0] - 2022-12-01
+
 - Change `callable_with_hash` to return a symbol, if called with a singular method.
 
 ## [1.0.0] - 2022-12-01
