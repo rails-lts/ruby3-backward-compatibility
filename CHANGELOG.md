@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+- Breaking: Rename `ruby3_keywords` to `callable_with_hash`.
+
 ## [0.3.0] - 2022-11-22
 
 - Security fix: `ruby3_backward_compatibility/compatibility/psych` no longer aliases YAML.load to YAML.safe_load.

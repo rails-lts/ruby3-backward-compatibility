@@ -35,7 +35,7 @@ Note however that this will not patch anything that has not been required yet. Y
 
 ## List of backports
 
-### ruby3 keyword arguments
+### Ruby 3 keyword arguments
 
 One breaking change in Ruby 3 is that methods defined using keyword arguments have to be called with keyword arguments, not with option hashes. For example
 
@@ -50,7 +50,7 @@ Ruby3Class.new.some_method(foo: 'bar') # works
 Ruby3Class.new.some_method({ foo: 'bar' }) # raises an ArgumentError
 ```
 
-To fix this for arbitrary methods, you can use the `ruby3_keywords` method included in this gem, like this:
+To fix this for arbitrary methods, you can use the `callable_with_hash` method included in this gem, like this:
 
 ```
 require 'ruby3_backward_compatibility'
@@ -58,9 +58,9 @@ require 'ruby3_backward_compatibility'
 class Ruby3Class
   # reopen the class
 
-  extend Ruby3BackwardCompatibility::Ruby3Keywords
+  extend Ruby3BackwardCompatibility::CallableWithHash
 
-  ruby3_keywords :some_method
+  callable_with_hash :some_method
 end
 
 Ruby3Class.new.some_method(foo: 'bar') # still works
@@ -69,7 +69,7 @@ Ruby3Class.new.some_method({ foo: 'bar' }) # now works as well
 
 This will wrap the given method and convert a hash given as the last argument into keywords, similar to how it worked in Ruby 2.
 
-*Note:* In case the method is also defined in a prepended module, you need to put the `extend Ruby3BackwardCompatibility::Ruby3Keywords` above the `prepend`.
+*Note:* In case the method is also defined in a prepended module, you need to put the `extend Ruby3BackwardCompatibility::CallableWithHash` above the `prepend`.
 
 ### ERB
 

@@ -1,7 +1,7 @@
 require 'i18n'
 
 module I18n::Base
-  extend Ruby3BackwardCompatibility::Ruby3Keywords
+  extend Ruby3BackwardCompatibility::CallableWithHash
 
-  ruby3_keywords :translate, :translate!, :localize, :t, :l, :transliterate, ignore_missing: true
+  callable_with_hash :translate, :translate!, :localize, :t, :l, :transliterate, ignore_missing: true
 end
