@@ -1,5 +1,5 @@
 class String
-  extend Ruby3BackwardCompatibility::Ruby3Keywords
+  extend Ruby3BackwardCompatibility::CallableWithHash
 
-  ruby3_keywords :encode
+  callable_with_hash :encode
 end

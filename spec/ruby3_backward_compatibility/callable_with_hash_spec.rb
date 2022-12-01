@@ -1,19 +1,19 @@
 module Ruby3BackwardCompatibility
-  describe Ruby3Keywords do
-    describe '.ruby3_keywords' do
+  describe CallableWithHash do
+    describe '.callable_with_hash' do
       let(:class_with_basic_keyword_methods) do
         Class.new do
-          extend Ruby3Keywords
+          extend CallableWithHash
 
-          ruby3_keywords def keyword_method(regular_arg, keyword_arg:)
+          callable_with_hash def keyword_method(regular_arg, keyword_arg:)
             [regular_arg, keyword_arg]
           end
 
-          ruby3_keywords def optional_keyword_method(regular_arg, keyword_arg: 'default-keyword-arg')
+          callable_with_hash def optional_keyword_method(regular_arg, keyword_arg: 'default-keyword-arg')
             [regular_arg, keyword_arg]
           end
 
-          ruby3_keywords def optional_keyword_method_with_rest_args(regular_arg, keyword_arg: 'default-keyword-arg', **rest_keyword_args)
+          callable_with_hash def optional_keyword_method_with_rest_args(regular_arg, keyword_arg: 'default-keyword-arg', **rest_keyword_args)
             [regular_arg, keyword_arg, rest_keyword_args]
           end
         end
@@ -56,8 +56,8 @@ module Ruby3BackwardCompatibility
           end
         end
         pristine_class.class_eval do
-          extend Ruby3Keywords
-          ruby3_keywords :keyword_method
+          extend CallableWithHash
+          callable_with_hash :keyword_method
         end
         subject = pristine_class.new
 
@@ -75,8 +75,8 @@ module Ruby3BackwardCompatibility
           end
         end
         pristine_class.class_eval do
-          extend Ruby3Keywords
-          ruby3_keywords :keyword_method_1, :keyword_method_2
+          extend CallableWithHash
+          callable_with_hash :keyword_method_1, :keyword_method_2
         end
         subject = pristine_class.new
 
@@ -95,9 +95,9 @@ module Ruby3BackwardCompatibility
 
       it 'passes through blocks' do
         subject = Class.new do
-          extend Ruby3Keywords
+          extend CallableWithHash
 
-          ruby3_keywords def method_with_block(&block)
+          callable_with_hash def method_with_block(&block)
             block.call
           end
         end.new
@@ -110,9 +110,9 @@ module Ruby3BackwardCompatibility
       it 'crashes if the method does not exist' do
         expect do
           Class.new do
-            extend Ruby3Keywords
+            extend CallableWithHash
 
-            ruby3_keywords :undefined_method
+            callable_with_hash :undefined_method
           end
         end.to raise_error(NameError, /'undefined_method' is not defined/)
       end
@@ -120,9 +120,9 @@ module Ruby3BackwardCompatibility
       it 'can be configured to ignore unknown methods' do
         expect do
           Class.new do
-            extend Ruby3Keywords
+            extend CallableWithHash
 
-            ruby3_keywords :undefined_method, ignore_missing: true
+            callable_with_hash :undefined_method, ignore_missing: true
           end
         end.not_to raise_error
       end
@@ -130,11 +130,11 @@ module Ruby3BackwardCompatibility
       context 'on private methods' do
         let(:class_with_private_keyword_method) do
           Class.new do
-            extend Ruby3Keywords
+            extend CallableWithHash
 
             private
 
-            ruby3_keywords def private_keyword_method(regular_arg, keyword_arg:)
+            callable_with_hash def private_keyword_method(regular_arg, keyword_arg:)
               [regular_arg, keyword_arg]
             end
           end
@@ -156,11 +156,11 @@ module Ruby3BackwardCompatibility
       context 'on protected methods' do
         let(:class_with_protected_keyword_method) do
           Class.new do
-            extend Ruby3Keywords
+            extend CallableWithHash
 
             protected
 
-            ruby3_keywords def protected_keyword_method(regular_arg, keyword_arg:)
+            callable_with_hash def protected_keyword_method(regular_arg, keyword_arg:)
               [regular_arg, keyword_arg]
             end
           end
@@ -190,10 +190,10 @@ module Ruby3BackwardCompatibility
         let(:class_with_prepended_keyword_method) do
           prepend_module = wrap_with_positional_hash
           Class.new do
-            extend Ruby3Keywords
+            extend CallableWithHash
             prepend prepend_module
 
-            ruby3_keywords def prepended_keyword_method(regular_arg, keyword_arg: 'default-keyword-arg')
+            callable_with_hash def prepended_keyword_method(regular_arg, keyword_arg: 'default-keyword-arg')
               [regular_arg, keyword_arg]
             end
           end
@@ -203,6 +203,25 @@ module Ruby3BackwardCompatibility
           subject = class_with_prepended_keyword_method.new
           expect(subject.prepended_keyword_method('foo', keyword_arg: 'bar')).to eq(['foo', 'bar'])
           expect(subject.prepended_keyword_method('foo', { keyword_arg: 'bar' })).to eq(['foo', 'bar'])
+        end
+      end
+
+      context 'inheritance' do
+        let(:inherited_class) do
+          Class.new(class_with_basic_keyword_methods)
+        end
+
+        it 'works' do
+          subject = inherited_class.new
+          expect(subject.keyword_method('foo', keyword_arg: 'bar')).to eq(['foo', 'bar'])
+          expect(subject.keyword_method('foo', { keyword_arg: 'bar' })).to eq(['foo', 'bar'])
+        end
+
+        it 'warns when #callable_with_hash is called on the wrong class' do
+          expect(CallableWithHash).to receive(:warn).with(match(/appears not to be the correct owner/))
+
+          inherited_class.extend Ruby3BackwardCompatibility::CallableWithHash
+          inherited_class.callable_with_hash :keyword_method
         end
       end
     end
