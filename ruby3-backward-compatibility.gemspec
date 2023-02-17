@@ -11,7 +11,6 @@ Gem::Specification.new do |spec|
   spec.summary       = 'Backward compatibility for Ruby 3 stdlib'
   spec.homepage      = 'https://github.com/makandra/ruby3-backward-compatibility'
   spec.license       = 'MIT'
-  spec.required_ruby_version = '>= 3.0.0'
 
   spec.metadata['homepage_uri'] = spec.homepage
   spec.metadata['source_code_uri'] = 'https://github.com/makandra/ruby3-backward-compatibility'
