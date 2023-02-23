@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [1.1.1] - 2022-12-01
+
+- Gem no longer requires Ruby 3. It will not do anything when used on Ruby 2.x, but you can add it to your Gemfile if you need that for a Ruby migration strategy. (Thanks to @BigAirJosh)
+
 ## [1.1.0] - 2022-12-01
 
 - Change `callable_with_hash` to return a symbol, if called with a singular method.
