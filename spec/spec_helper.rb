@@ -16,4 +16,11 @@ RSpec.configure do |config|
       skip('Does not apply to this Ruby version.')
     end
   end
+
+  ruby2_specs = 'ruby2/**/*_spec.rb'
+  if RUBY_VERSION < '3'
+    config.pattern = ruby2_specs
+  else
+    config.exclude_pattern = ruby2_specs
+  end
 end
