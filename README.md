@@ -130,13 +130,13 @@ Psych version 4 (default for Ruby 3.1) has two changes:
   Psych.safe_load(yaml, permitted_classes: [], permitted_symbols: [], aliases: false, filename: nil)
   ```
 
-To alias `Psych.unsafe_load` as `Psych.load`, and to allow both styles of calling `Psych.safe_load`, use
+To allow both styles of calling `Psych.safe_load`, use
 
 ```
 require 'ruby3_backward_compatibility/compatibility/psych'
 ```
 
-**Attention:** There has been a very good reason why Psych renamed the `.load` method: You may never use `.load` on any external strings. It is possible to create valid YAML strings that lead to the execution of arbitrary code, so calling `YAML.load` on user input is a major security vulnerability.
+**Attention:** There has been a very good reason why Psych renamed the `.load` method: You may never use `.load` on any external strings. It is possible to create valid YAML strings that lead to the execution of arbitrary code, so calling `YAML.load` on user input is a major security vulnerability. For that reason, this library does not change the safe behavior of `YAML.load`.
 
 
 ### String
