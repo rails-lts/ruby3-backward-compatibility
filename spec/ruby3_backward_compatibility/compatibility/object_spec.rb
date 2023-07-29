@@ -15,5 +15,12 @@ module Ruby3BackwardCompatibility
         expect(object.untaint).to eq(object)
       end
     end
+
+    describe '#=~' do
+      it 'returns nil' do
+        object = Object.new
+        expect(object =~ object).to eq(nil)
+      end
+    end
   end
 end

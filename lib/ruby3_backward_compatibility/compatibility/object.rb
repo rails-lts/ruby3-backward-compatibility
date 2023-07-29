@@ -8,6 +8,10 @@ module Ruby3BackwardCompatibility
     def untaint
       self
     end
+
+    def =~(*)
+      nil
+    end
   end
 end
 
