@@ -1,6 +1,7 @@
 ## [Unreleased]
 
 - Added back `File.exists?` and `Dir.exists?` on Ruby 3.2+.
+- Added back `Fixnum` as an alias for `Integer`.
 
 ## [1.1.1] - 2022-12-01
 

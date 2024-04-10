@@ -78,7 +78,7 @@ This will wrap the given method and convert a hash given as the last argument in
 To add `Dir.exists?` as an alias for `Dir.exist?`, use
 
 ```
-require 'ruby3_backward_compatibility/compatibility/file'
+require 'ruby3_backward_compatibility/compatibility/dir'
 ```
 
 ### ERB
@@ -109,6 +109,16 @@ To add `File.exists?` as an alias for `File.exist?`, use
 
 ```
 require 'ruby3_backward_compatibility/compatibility/file'
+```
+
+### Fixnum
+
+`Fixnum` has been an alias for `Integer` for a while, but was removed.
+
+To add back `Fixnum` as an alias for `Integer`, use
+
+```
+require 'ruby3_backward_compatibility/compatibility/fixnum'
 ```
 
 ### I18n
