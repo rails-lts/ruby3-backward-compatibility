@@ -71,6 +71,16 @@ This will wrap the given method and convert a hash given as the last argument in
 
 *Note:* In case the method is also defined in a prepended module, you need to put the `extend Ruby3BackwardCompatibility::CallableWithHash` above the `prepend`.
 
+### Dir
+
+`Dir.exists?` has been removed in favor of `Dir.exist?`.
+
+To add `Dir.exists?` as an alias for `Dir.exist?`, use
+
+```
+require 'ruby3_backward_compatibility/compatibility/file'
+```
+
 ### ERB
 
 `ERB.new` used to have the signature
@@ -91,6 +101,15 @@ To allow both styles, use
 require 'ruby3_backward_compatibility/compatibility/erb'
 ```
 
+### File
+
+`File.exists?` has been removed in favor of `File.exist?`.
+
+To add `File.exists?` as an alias for `File.exist?`, use
+
+```
+require 'ruby3_backward_compatibility/compatibility/file'
+```
 
 ### I18n
 
