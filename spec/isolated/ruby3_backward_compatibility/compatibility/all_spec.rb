@@ -17,6 +17,7 @@ module Ruby3BackwardCompatibility
       expect($LOADED_FEATURES).to include(expand_require('ruby3_backward_compatibility/compatibility/i18n'))
       expect($LOADED_FEATURES).to include(expand_require('ruby3_backward_compatibility/compatibility/object'))
       expect($LOADED_FEATURES).to include(expand_require('ruby3_backward_compatibility/compatibility/psych'))
+      expect($LOADED_FEATURES).to include(expand_require('ruby3_backward_compatibility/compatibility/regexp'))
       expect($LOADED_FEATURES).to include(expand_require('ruby3_backward_compatibility/compatibility/string'))
       expect($LOADED_FEATURES).to include(expand_require('ruby3_backward_compatibility/compatibility/uri'))
     end
