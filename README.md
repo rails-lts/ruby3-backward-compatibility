@@ -142,6 +142,17 @@ To add them back as no-ops, use
 require 'ruby3_backward_compatibility/compatibility/object'
 ```
 
+### Regexp (Ruby 3.2+)
+
+It was possible to instantiate a Regexp with `Regexp.new('foo', Regexp::IGNORECASE, 'n')`. The last argument used to indicate the encoding in Ruby 1.8. Up to Ruby 3.2 an argument of "n" or "N" indicated a regexp that ignores encoding (same as the Regexp::NOENCODING flag).
+
+In Ruby 3 this raises an `ArgumentError`.
+
+To bring back the old behavior, use
+
+```
+require 'ruby3_backward_compatibility/compatibility/regexp'
+```
 
 ### YAML (Psych)
 

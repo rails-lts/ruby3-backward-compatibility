@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+- Ruby 3.2+: Add back third argument to Regexp.new, to allow passing "n" to set `Regexp::NOENCODING`.
+
 ## [1.2.0] - 2024-04-10
 
 - First release with dedicated suport to Ruby 3.3.
