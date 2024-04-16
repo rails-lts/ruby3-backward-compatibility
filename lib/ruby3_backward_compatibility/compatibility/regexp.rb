@@ -15,19 +15,25 @@ if RUBY_VERSION >= '3.2'
           if options == NOT_GIVEN
             super(regexp_or_string, **kwargs)
           elsif n_flag == 'n' || n_flag == 'N'
+            # 3 positional arguments, no longer supported since Ruby 3.3
+            # => syntax <= 3.2
+
+            if RUBY_VERSION < '3.3' && options.is_a?(String) && options =~ LEGITIMATE_FLAGS
+              # on Ruby 3.2 we can legitimately have options "mix" treated as flags, syntax ambiguous, interpret as 3.2
+              # => ruby = 3.2, syntax = 3.2
+              return super(regexp_or_string, options, n_flag, **kwargs)
+            end
+
             unless options.is_a?(Integer)
-              if RUBY_VERSION < '3.3' && options.is_a?(String) && options =~ LEGITIMATE_FLAGS
-                # on Ruby 3.2 we can legitimately have options "mix" treated as flags, so parse them
-                # on Ruby 3.3 this would never have been legitimate, since a third argument would not have been allowed
-                new_options = 0
-                new_options |= Regexp::MULTILINE if options.include?('m')
-                new_options |= Regexp::IGNORECASE if options.include?('i')
-                new_options |= Regexp::EXTENDED if options.include?('x')
-                options = new_options
-              else
-                # on all other Ruby, truish is IGNORECASE
-                options = options ? Regexp::IGNORECASE : 0
-              end
+              # on Ruby 3.3 flag options AND a third argument would never have been legitimate
+              # => interpret as syntax <= 3.1, because this would have given a deprecation warning on Ruby 3.2
+              # ruby >= 3.3, syntax <= 3.1
+
+              # on Ruby 3.2, but options is neither integer not legitimate flag, so compatible with syntax <= 3.1
+              # ruby = 3.2, syntax compatible with <= 3.1
+
+              # for syntax <= 3.1, truish is IGNORECASE
+              options = options ? Regexp::IGNORECASE : 0
             end
             super(regexp_or_string, options | Regexp::NOENCODING, **kwargs)
           elsif options.is_a?(String)
