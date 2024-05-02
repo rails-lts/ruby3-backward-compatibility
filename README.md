@@ -136,7 +136,9 @@ require 'ruby3_backward_compatibility/compatibility/i18n'
 
 The methods `Object#taint` and `Object#untaint` were no-ops for a while but started to raise deprecation warnings.
 
-To add them back as no-ops, use
+The method `Object#=~` always returned `nil` if called on anything else than a String. It was removed in Ruby 3.2.
+
+To add back `Object#taint` and `Object#untaint` as no-ops and `Object#=~` on arbitrary receivers, use
 
 ```
 require 'ruby3_backward_compatibility/compatibility/object'
