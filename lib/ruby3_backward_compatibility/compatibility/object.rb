@@ -8,6 +8,14 @@ module Ruby3BackwardCompatibility
     def untaint
       self
     end
+
+    # Make the match operator work on arbitrary receivers again.
+    def =~(regexp)
+      if Warning[:deprecated]
+        Warning.warn("deprecated Object#=~ is called on #{self.class}; it always returns nil")
+      end
+      nil
+    end
   end
 end
 
