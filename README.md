@@ -81,6 +81,16 @@ To add `Dir.exists?` as an alias for `Dir.exist?`, use
 require 'ruby3_backward_compatibility/compatibility/dir'
 ```
 
+### Bignum
+
+`Bignum` has been an alias for `Integer` for a while, but was removed.
+
+To add back `Bignum` as an alias for `Integer`, use
+
+```
+require 'ruby3_backward_compatibility/compatibility/bignum'
+```
+
 ### ERB
 
 `ERB.new` used to have the signature

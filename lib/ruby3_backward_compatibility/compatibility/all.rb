@@ -1,6 +1,7 @@
 require 'ruby3_backward_compatibility'
 
 require 'ruby3_backward_compatibility/compatibility/dir'
+require 'ruby3_backward_compatibility/compatibility/bignum'
 require 'ruby3_backward_compatibility/compatibility/erb' if defined?(ERB)
 require 'ruby3_backward_compatibility/compatibility/file'
 require 'ruby3_backward_compatibility/compatibility/fixnum'
