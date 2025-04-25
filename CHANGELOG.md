@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [1.5.0] - 2025-04-25
+
+- Added back `Bignum` as an alias for `Integer`.
+
 ## [1.4.0] - 2024-05-02
 
 - Ruby 3.2+: Add back `Object#=~`
