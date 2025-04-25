@@ -10,6 +10,7 @@ module Ruby3BackwardCompatibility
     end
 
     it 'requires everything' do
+      expect($LOADED_FEATURES).to include(expand_require('ruby3_backward_compatibility/compatibility/bignum'))
       expect($LOADED_FEATURES).to include(expand_require('ruby3_backward_compatibility/compatibility/dir'))
       expect($LOADED_FEATURES).to include(expand_require('ruby3_backward_compatibility/compatibility/erb'))
       expect($LOADED_FEATURES).to include(expand_require('ruby3_backward_compatibility/compatibility/file'))
