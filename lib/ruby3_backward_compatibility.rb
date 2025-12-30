@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-if RUBY_VERSION.start_with?('3')
-  module Ruby3BackwardCompatibility
+if RUBY_VERSION.to_i >= 3
+  module Ruby3BackwardCompat(bility
     NOT_GIVEN = Object.new
   end
 
