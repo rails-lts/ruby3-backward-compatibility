@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [1.5.1] - 2026-01-13
+
+- Ruby 4: Gem will no longer refuse to load.
+
 ## [1.5.0] - 2025-04-25
 
 - Added back `Bignum` as an alias for `Integer`.
