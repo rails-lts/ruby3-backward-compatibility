@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+- `ERB#src` gives back a mutable string again. Newer erb 6 releases freeze the
+  compiled source, which breaks callers that modify it in place, for example tilt 1.x
+  force_encodings it.
+
 ## [1.5.1] - 2026-01-13
 
 - Ruby 4: Gem will no longer refuse to load.
