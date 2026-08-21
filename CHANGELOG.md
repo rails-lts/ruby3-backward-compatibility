@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## [1.6.0] - 2026-08-21
+
 - `ERB#src` gives back a mutable string again. Newer erb 6 releases freeze the
   compiled source, which breaks callers that modify it in place, for example tilt 1.x
   force_encodings it.

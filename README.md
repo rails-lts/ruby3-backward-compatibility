@@ -105,7 +105,12 @@ but this was changed to
 ERB.new(string, safe_level: nil, trim_mode: nil, eoutvar: '_erbout')
 ```
 
-To allow both styles, use
+
+Additionally, ERB#src used to return a mutable string, which
+some consumer might rely on. New ERB versions return frozen strings.
+
+
+To fix both these issues,
 
 ```
 require 'ruby3_backward_compatibility/compatibility/erb'
